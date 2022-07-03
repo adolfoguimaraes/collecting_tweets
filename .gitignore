@@ -1,0 +1,4 @@
+__pycache__
+*.log
+coleta/
+config.ini
