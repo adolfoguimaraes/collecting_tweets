@@ -1,7 +1,10 @@
+
 from twarc.client2 import Twarc2
 import threading
 import jsonlines
 
+
+from twarc.expansions import flatten
 import configparser
 
 class Collect:
@@ -17,6 +20,36 @@ class Collect:
         # Twitter authentication
         self.api = Twarc2(bearer_token=BEARER_TOKEN)
 
+    def search(self, query, limit_pages=1, id="collecting_search", max_per_request=10, folder=None):
+        pages = 0
+        found_tweets = 0
+        try:
+
+            if folder:
+                file_output = folder + "/" + id + ".jsonl"
+            else:
+                file_output = id + ".jsonl"
+
+            for response_page in self.api.search_recent(query, sort_order='recency',max_results=max_per_request):
+                pages += 1
+
+                tweets = flatten(response_page)
+                
+                found_tweets += len(tweets)
+
+                with jsonlines.open(file_output, mode="a") as writer:
+                    for t in tweets:
+                        writer.write(t)
+
+
+                if pages == limit_pages:
+                    break
+
+            print("Total collected: %i" % found_tweets)
+        except Exception as e:
+            print("Collect error.")
+            print(e)
+
     def stream(self, search_rules, id="collecting_stream", limit=100, folder=None):
 
         try:
@@ -28,7 +61,7 @@ class Collect:
                 self.api.delete_stream_rule_ids(rule_ids)
 
             # Add rules
-            new_rules = [{"value": r, "tag":  id} for r in search_rules]
+            new_rules = [{"value": r, "tag":  r} for r in search_rules]
             rules = self.api.add_stream_rules(new_rules)
             
             # Collecting
@@ -42,8 +75,8 @@ class Collect:
 
             with jsonlines.open(file_output, mode="a") as writer:
                 for count, result in enumerate(self.api.stream(event=event)):
-                    print(count)
-                    writer.write(result)
+                    tweet_ = flatten(result)
+                    writer.write(tweet_[0])
 
                     if limit:
                         if count >= limit - 1:
@@ -54,13 +87,8 @@ class Collect:
             self.api.delete_stream_rule_ids(rule_ids)
 
         except Exception as e:
-            print("Collecting error.")
+            print("Collect error.")
             print(e)
 
-
-
-if __name__ == "__main__":
-
-    c = Collect("config.ini")
-    c.stream(search_rules=["brasil"], limit=1, folder="coleta/teste1", id="coletabrasil1")
+    
 
