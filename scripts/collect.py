@@ -43,15 +43,16 @@ class Collect:
             print("End Search: %s " % datetime.datetime.strftime(end_, "%d/%m/%Y %H:%M:%S"))
             
             if folder:
-                file_output = folder + "/" + id + ".jsonl"
+                file_output = folder + "/" + id 
             else:
-                file_output = id + ".jsonl"
+                file_output = id 
 
             for response_page in self.api.counts_all(query,start_time=start_, end_time=end_, granularity=time["delta_type"]):
                 counts = response_page["data"]
             
 
             total_count = 0
+            file_id = 0
             for count_ in counts:
                 end_count = datetime.datetime.strptime(count_['end'], "%Y-%m-%dT%H:%M:%S.000Z")
                 start_count = datetime.datetime.strptime(count_['start'], "%Y-%m-%dT%H:%M:%S.000Z")
@@ -60,8 +61,9 @@ class Collect:
 
                 start_count_str = datetime.datetime.strftime(start_count, "%d/%m/%Y %H:%M:%S")
                 end_count_str = datetime.datetime.strftime(end_count, "%d/%m/%Y %H:%M:%S")
-                print("Collecting from %s to %s" % (start_count_str, end_count_str))
+                print("Collecting %i tweets from %s to %s" % (count_['tweet_count'], start_count_str, end_count_str))
                 
+                file_output_id = file_output + "_" + str(file_id) + ".jsonl"
                 
                 pages = 0
                 found_tweets = 0
@@ -75,7 +77,7 @@ class Collect:
 
                     print("\tPage %i: %i tweets collected " % (pages, len(tweets)))
 
-                    with jsonlines.open(file_output, mode="a") as writer:
+                    with jsonlines.open(file_output_id, mode="a") as writer:
                         for t in tweets:
                             writer.write(t)
 
@@ -85,6 +87,7 @@ class Collect:
 
                 print("Total collected: %i" % found_tweets)
                 total_count += found_tweets
+                file_id += 1
 
             print("Total collected of all search: %i" % total_count)
             
