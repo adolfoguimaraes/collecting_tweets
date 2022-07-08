@@ -63,23 +63,24 @@ class Collect:
                 end_count_str = datetime.datetime.strftime(end_count, "%d/%m/%Y %H:%M:%S")
                 print("Collecting %i tweets from %s to %s" % (count_['tweet_count'], start_count_str, end_count_str))
                 
-                file_output_id = file_output + "_" + str(file_id) + ".jsonl"
+                
                 
                 pages = 0
                 found_tweets = 0
                 for response_page in self.api.search_all(query, sort_order='recency', max_results=max_per_request, start_time=start_count, end_time=end_count):
                     pages += 1
+
+                    file_output_id = file_output + "_" + str(file_id) + "_page" + str(pages) + ".jsonl"
                     
                     tweets = flatten(response_page)
-                    
+
                     found_tweets += len(tweets)
                     
 
                     print("\tPage %i: %i tweets collected " % (pages, len(tweets)))
 
                     with jsonlines.open(file_output_id, mode="a") as writer:
-                        for t in tweets:
-                            writer.write(t)
+                        writer.write_all(tweets)
 
 
                     if pages == number_of_pages:
@@ -106,20 +107,28 @@ class Collect:
         try:
 
             if folder:
-                file_output = folder + "/" + id + ".jsonl"
+                file_output = folder + "/" + id
             else:
                 file_output = id + ".jsonl"
+
+            # Collecting
+            print("Collecting query: %s" % (query))
 
             for response_page in self.api.search_recent(query, sort_order='recency',max_results=max_per_request):
                 pages += 1
 
+                print("\tPage %i: " % pages, end=' ')
+
                 tweets = flatten(response_page)
+
+                file_output_id = file_output + "_page" + str(pages) + ".jsonl"
                 
                 found_tweets += len(tweets)
 
-                with jsonlines.open(file_output, mode="a") as writer:
-                    for t in tweets:
-                        writer.write(t)
+                print("%i tweets collected." % len(tweets))
+
+                with jsonlines.open(file_output_id, mode="a") as writer:
+                    writer.write_all(tweets)
 
 
                 if pages == limit_pages:
