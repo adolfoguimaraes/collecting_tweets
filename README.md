@@ -66,7 +66,7 @@ O método `search` recebe os seguintes parâmetros:
 * `max_per_request`: máximo de tweets que serão retornados por página. Esse valor é limitado a 100. 
 * `folder`: local que o arquivo de saída será armazendo.
 
-O método retorna como saída um arquivo do timpo JSONL (json lines, onde cada linha é um json válido) com o nome `id`.jsonl na pasta `folder`. O método é finalizado quando atingir o número limite de páginas retornadas.
+O método retorna como saída um arquivo JSONL (json lines, onde cada linha é um json válido) para cada página coletada  com o nome `[ID]_page[NUMERODAPAGINA]`.jsonl na pasta `folder`. O método é finalizado quando atingir o número limite de páginas solicitadas.
 
 _Exemplo_
 
@@ -99,12 +99,13 @@ O método `search_archive` recebe os seguintes parâmetros:
     * `delta`: esse parâmetro define a data início de busca. Por exemplo, se o `end` é 01/07/2022 22:00, um delta de 1 hora mais definir a data inicial de busca para 01/07/2022 21:00.
     * `delta_type`: define a métrica do delta. Esse valor pode assumir `hour` ou `minute`.
 
-O método retorna como saída um arquivo do timpo JSONL (json lines, onde cada linha é um json válido) com o nome `id`.jsonl na pasta `folder`. O método é finalizado quando atingir a data final da busca.
+O método retorna como saída um arquivo do tipo JSONL (json lines, onde cada linha é um json válido). Os arquivos serão salvos na pasta `folder`. Como essa busca pode coletar muitos tweets. Eles serão salvos em diferentes arquivos de acordo com a granularidade (hora ou minuto passado no atributo `delta_type`) escolhida e a página retornada. com o nome `[id]_[INT]_page[NUMERODAPAGINA]`.jsonl na pasta `folder`.
+
+`INT` indica um contador dentro da granularidade. Por exemplo, se a granularidade for de 1 hora, esse valor vai ser 0 na primeira hora coletada, 1 na segunda, 2 na terceira e assim por diante. Dentro de cada hora, o número da página é reiniciado. 
 
 _Exemplo_
 
 ```python
-
 from scripts.collect import Collect
 import datetime
 
