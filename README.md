@@ -4,8 +4,6 @@ Esse repositório possui scripts em python para realizar a coleta de tweets util
 
 Os scripts de busca estão implementados na pasta `scripts/`. Na pasta `examples` existem exemplos de uso de cada um dos scripts. 
 
-Foram implementos scripts para três funcionalidades: 
-
 ## Acesso à API do Twitter
 
 Para executar os scripts é necessário ter uma conta de desenvolvedor no Twitter. O cadastro de desenvolvedor pode ser feito no link: https://developer.twitter.com/.
@@ -23,6 +21,10 @@ BEARER_TOKEN = COLOQUE SUA CHAVE AQUI.
 Alguns acessos só é permitido para os usuários que tem _Academic Research Access_. Mais detalhes dos requisitos para solicitar esse tipo de acesso está disponível no link: https://developer.twitter.com/en/products/twitter-api/academic-research. 
 
 ## Funcionalidades
+
+Para rodar os scripts é necessário instalar as dependências listadas no arquivo `requirements.txt`. Use o comando: `pip install -r requirements.txt` para instalar.
+
+Foram implementdos scripts para três funcionalidades: 
 
 **Stream**
 
