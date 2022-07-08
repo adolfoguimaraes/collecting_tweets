@@ -56,6 +56,10 @@ c.stream(
 )
 ```
 
+_Arquivo `examples/stream.py`. Para executar, rode o seguinte comando na pasta raiz do repositório: `python -m examples.stream`._
+
+---
+
 **Recent Search**
 
 Busca dos tweets mais recentes a partir de uma string de busca.
@@ -85,6 +89,9 @@ c.search(
     id="coletabrasil1"
 )
 ```
+_Arquivo `examples/search.py`. Para executar, rode o seguinte comando na pasta raiz do repositório: `python -m examples.search`._
+
+---
 
 **Archive Search**
 
@@ -125,5 +132,5 @@ c.search_archive(
     id="coletabrasil2", 
     folder="coleta/teste1"
 )
-
 ```
+_Arquivo `examples/search_archive.py`. Para executar, rode o seguinte comando na pasta raiz do repositório: `python -m examples.search_archive`._
