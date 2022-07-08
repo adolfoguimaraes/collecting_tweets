@@ -18,13 +18,13 @@ _Modelo do arquivo de configuração_
 BEARER_TOKEN = COLOQUE SUA CHAVE AQUI.
 ```
 
-Alguns acessos só é permitido para os usuários que tem _Academic Research Access_. Mais detalhes dos requisitos para solicitar esse tipo de acesso está disponível no link: https://developer.twitter.com/en/products/twitter-api/academic-research. 
+Alguns acessos só são permitidos para os usuários que têm o _Academic Research Access_. Mais detalhes dos requisitos para solicitar esse tipo de acesso estão disponíveis no link: https://developer.twitter.com/en/products/twitter-api/academic-research. 
 
 ## Funcionalidades
 
 Para rodar os scripts é necessário instalar as dependências listadas no arquivo `requirements.txt`. Use o comando: `pip install -r requirements.txt` para instalar.
 
-Foram implementdos scripts para três funcionalidades: 
+Foram implementados scripts para as seguintes funcionalidades: 
 
 **Stream**
 
@@ -35,9 +35,9 @@ O método `stream` recebe os seguintes parâmetros:
 * `seach_rules`: lista com as string de buscas que serão pesquisadas;
 * `id`: string de identificação da busca. Será associado ao arquivo resultado da busca.
 * `limit`: número de tweets que serão retornados. Existe uma limitação mensal de acordo com o tipo de conta que você tem na API. 
-* `folder`: local que o arquivo de saída será armazendo.
+* `folder`: local onde o arquivo de saída será salvo.
 
-O método retorna como saída um arquivo do timpo JSONL (json lines, onde cada linha é um json válido) com o nome `id`.jsonl na pasta `folder`.
+O método retorna como saída um arquivo do tipo JSONL (json lines, onde cada linha é um json válido) com o nome `id`.jsonl na pasta `folder`.
 
 Essa busca é encerrada quando o valor de `limit` é atingido ou apertando `Crlt + C`.
 
@@ -65,10 +65,10 @@ O método `search` recebe os seguintes parâmetros:
 * `query`: string de busca que será pesquisada no twitter;
 * `id`: string de identificação da busca. Será associado ao arquivo resultado da busca.
 * `limit_pages`: número de páginas que serão retornadas na busca. Cada página tem no máximo `max_per_request` tweets. O número máximo de tweets que podem ser retornado por página é 100. A primeira página possui os tweets mais recentes. 
-* `max_per_request`: máximo de tweets que serão retornados por página. Esse valor é limitado a 100. 
-* `folder`: local que o arquivo de saída será armazendo.
+* `max_per_request`: máximo de tweets que serão retornados por página. Esse valor tem limite superior igual a 100.
+* `folder`: local onde os arquivos de saída serão salvos.
 
-O método retorna como saída um arquivo JSONL (json lines, onde cada linha é um json válido) para cada página coletada  com o nome `[ID]_page[NUMERODAPAGINA]`.jsonl na pasta `folder`. O método é finalizado quando atingir o número limite de páginas solicitadas.
+O método retorna como saída um arquivo JSONL (json lines, onde cada linha é um json válido) para cada página coletada  com o nome `[ID]_page[NUMERODAPAGINA]`.jsonl na pasta `folder`. O método é finalizado quando o número limite de páginas solicitadas é atingido.
 
 _Exemplo_
 
@@ -94,16 +94,14 @@ O método `search_archive` recebe os seguintes parâmetros:
 
 * `query`: string de busca que será pesquisada no twitter;
 * `id`: string de identificação da busca. Será associado ao arquivo resultado da busca.
-* `max_per_request`: máximo de tweets que serão retornados por página. Esse valor é limitado a 100. 
-* `folder`: local que o arquivo de saída será armazendo.
-* `time`: esse parâmetro é um dicionário que define a data que os tweets serão consultados. O dicionario tem as seguintes chaves:
+* `max_per_request`: máximo de tweets que serão retornados por página. Esse valor tem limite superior igual a 100.
+* `folder`: local onde o arquivo de saída será armazendo.
+* `time`: esse parâmetro é um dicionário que define a data dos tweets quer serão coletados. O dicionário tem as seguintes chaves:
     * `end`: data final da busca.
-    * `delta`: esse parâmetro define a data início de busca. Por exemplo, se o `end` é 01/07/2022 22:00, um delta de 1 hora mais definir a data inicial de busca para 01/07/2022 21:00.
+    * `delta`: esse parâmetro define a data início de busca. Por exemplo, se o `end` é 01/07/2022 22:00, um delta de 1 hora vai definir a data inicial de busca para 01/07/2022 21:00.
     * `delta_type`: define a métrica do delta. Esse valor pode assumir `hour` ou `minute`.
 
-O método retorna como saída um arquivo do tipo JSONL (json lines, onde cada linha é um json válido). Os arquivos serão salvos na pasta `folder`. Como essa busca pode coletar muitos tweets. Eles serão salvos em diferentes arquivos de acordo com a granularidade (hora ou minuto passado no atributo `delta_type`) escolhida e a página retornada. com o nome `[id]_[INT]_page[NUMERODAPAGINA]`.jsonl na pasta `folder`.
-
-`INT` indica um contador dentro da granularidade. Por exemplo, se a granularidade for de 1 hora, esse valor vai ser 0 na primeira hora coletada, 1 na segunda, 2 na terceira e assim por diante. Dentro de cada hora, o número da página é reiniciado. 
+O método retorna como saída um arquivo do tipo JSONL (json lines, onde cada linha é um json válido). Os arquivos serão salvos na pasta `folder`. Como essa busca pode coletar muitos tweets, eles são salvos em diferentes arquivos de acordo com a granularidade (atributo `delta_type`) escolhida e com o número da página retornada na busca. Cada arquivo vai possuir o seguinte padrão de nome: `[id]_[INT]_page[NUMERODAPAGINA]`.jsonl. `INT` indica um contador dentro da granularidade. Por exemplo, se a granularidade for de 1 hora, esse valor vai ser 0 na primeira hora coletada, 1 na segunda, 2 na terceira e assim por diante. Dentro de cada hora, o número da página é reiniciado. 
 
 _Exemplo_
 
